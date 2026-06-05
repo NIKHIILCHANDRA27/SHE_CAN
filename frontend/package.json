@@ -1,0 +1,29 @@
+{
+  "name": "she-can-foundation-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "latest",
+    "chart.js": "latest",
+    "framer-motion": "latest",
+    "react": "18.3.1",
+    "react-chartjs-2": "latest",
+    "react-dom": "18.3.1",
+    "react-icons": "latest",
+    "react-router-dom": "6.14.2",
+    "react-toastify": "latest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "^3.4.4",
+    "vite": "latest"
+  }
+}

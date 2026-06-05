@@ -1,0 +1,6 @@
+// c:\Users\chand\Desktop\SHE_Foundation\frontend\.gitignore
+node_modules
+dist
+.env
+npm-debug.log*
+.DS_Store
