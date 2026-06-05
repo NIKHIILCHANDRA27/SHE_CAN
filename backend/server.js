@@ -65,8 +65,9 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
 
-// Mount auth routes also at /auth for backwards compatibility (frontend might call /auth/login)
+// Mount compatibility routes for deployed apps that use non-API prefixes.
 app.use('/auth', authRoutes);
+app.use('/contact', contactRoutes);
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'She Can Foundation API is running' });
