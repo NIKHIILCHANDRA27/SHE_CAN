@@ -7,7 +7,9 @@ export const PORT = process.env.PORT || 5000;
 export const MONGODB_URI = process.env.MONGODB_URI || '';
 export const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-export const CLIENT_URLS = (process.env.CLIENT_URL || 'http://localhost:5173')
+// Support either CLIENT_URL (single or comma list) or CLIENT_URLS env var
+const rawClientUrls = process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:5173';
+export const CLIENT_URLS = String(rawClientUrls)
   .split(',')
   .map((url) => url.trim())
   .filter(Boolean);

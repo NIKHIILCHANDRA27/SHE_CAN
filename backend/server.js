@@ -40,6 +40,18 @@ app.use(
   })
 );
 
+// Enable preflight across the board using the same CORS configuration
+app.options('*', cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || localhostOrigin.test(origin)) return callback(null, true);
+    callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
+  credentials: true
+}));
+
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -53,6 +65,9 @@ app.use('/api/auth/login', authLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
+
+// Mount auth routes also at /auth for backwards compatibility (frontend might call /auth/login)
+app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'She Can Foundation API is running' });
