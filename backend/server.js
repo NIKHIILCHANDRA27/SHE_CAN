@@ -27,30 +27,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 const allowedOrigins = CLIENT_URLS;
 const localhostOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+const allowAllCors = String(process.env.ALLOW_ALL_CORS || '').toLowerCase() === 'true';
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin) || localhostOrigin.test(origin)) return callback(null, true);
-      callback(new Error(`CORS policy does not allow access from origin ${origin}`));
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-  })
-);
+const corsOriginHandler = (origin, callback) => {
+  if (!origin) return callback(null, true); // non-browser tools
+  if (allowAllCors) return callback(null, true);
+  if (allowedOrigins.includes(origin) || localhostOrigin.test(origin)) return callback(null, true);
+  callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+};
 
-// Enable preflight across the board using the same CORS configuration
-app.options('*', cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || localhostOrigin.test(origin)) return callback(null, true);
-    callback(new Error(`CORS policy does not allow access from origin ${origin}`));
-  },
+const corsOptions = {
+  origin: corsOriginHandler,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
   credentials: true
-}));
+};
+
+if (allowAllCors) {
+  app.use(cors({ origin: true, credentials: true }));
+  app.options('*', cors({ origin: true, credentials: true }));
+} else {
+  app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));
+}
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
